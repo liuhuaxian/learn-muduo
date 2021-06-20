@@ -25,7 +25,7 @@ class CountDownLatch : noncopyable
   int getCount() const;
 
  private:
-  mutable MutexLock mutex_;
+  mutable MutexLock mutex_; //不管该类是否为const mutex_都是能够在在外部变化状态。
   Condition condition_ GUARDED_BY(mutex_);
   int count_ GUARDED_BY(mutex_);
 };

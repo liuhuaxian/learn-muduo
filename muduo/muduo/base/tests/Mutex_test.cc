@@ -27,7 +27,7 @@ int foo() __attribute__ ((noinline));
 int g_count = 0;
 int foo()
 {
-  MutexLockGuard lock(g_mutex);
+  MutexLockGuard lock(g_mutex); //运行foo的线程拥有此锁
   if (!g_mutex.isLockedByThisThread())
   {
     printf("FAIL\n");

@@ -26,18 +26,18 @@ class BlockingQueue : noncopyable
   {
   }
 
-  void put(const T& x)
+  void put(const T& x) //x为万能应用
   {
     MutexLockGuard lock(mutex_);
-    queue_.push_back(x);
+    queue_.push_back(x);   //将x的值拷贝到queue中
     notEmpty_.notify(); // wait morphing saves us
     // http://www.domaigne.com/blog/computing/condvars-signal-with-mutex-locked-or-not/
   }
 
-  void put(T&& x)
+  void put(T&& x) //x为右值引用。
   {
     MutexLockGuard lock(mutex_);
-    queue_.push_back(std::move(x));
+    queue_.push_back(std::move(x));  //std::move使x为悬空状态，其值已经转移到queue中 在外部修改x对queue没有影响
     notEmpty_.notify();
   }
 
@@ -50,7 +50,7 @@ class BlockingQueue : noncopyable
       notEmpty_.wait();
     }
     assert(!queue_.empty());
-    T front(std::move(queue_.front()));
+    T front(std::move(queue_.front())); //触发T的移动构造，提升效率。
     queue_.pop_front();
     return front;
   }

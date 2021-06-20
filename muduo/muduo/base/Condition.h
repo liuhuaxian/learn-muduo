@@ -26,10 +26,12 @@ class Condition : noncopyable
   {
     MCHECK(pthread_cond_destroy(&pcond_));
   }
-
+  
+  //此时mutex_需要还没有上锁，且不属于任何线程.
+  //使用wait需要先在外部对mutex_进行上锁
   void wait()
   {
-    MutexLock::UnassignGuard ug(mutex_);
+    MutexLock::UnassignGuard ug(mutex_); 
     MCHECK(pthread_cond_wait(&pcond_, mutex_.getPthreadMutex()));
   }
 

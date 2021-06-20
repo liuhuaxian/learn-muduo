@@ -99,6 +99,7 @@ __END_DECLS
 
 #else  // CHECK_PTHREAD_RETURN_VALUE
 
+//__typeof__ (ret) 获取ret的类型，之后定义errnum的值
 #define MCHECK(ret) ({ __typeof__ (ret) errnum = (ret);         \
                        assert(errnum == 0); (void) errnum;})
 

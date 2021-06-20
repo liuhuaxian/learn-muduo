@@ -16,10 +16,10 @@ CountDownLatch::CountDownLatch(int count)
 
 void CountDownLatch::wait()
 {
-  MutexLockGuard lock(mutex_);
+  MutexLockGuard lock(mutex_); //必须上锁后才能调用condition_.wait()，此时mutex属于当前线程
   while (count_ > 0)
   {
-    condition_.wait();
+    condition_.wait();  //此时mutex_不属于任何线程
   }
 }
 
