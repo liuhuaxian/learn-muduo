@@ -29,6 +29,7 @@ bool HttpContext::processRequestLine(const char* begin, const char* end)
       {
         request_.setPath(start, question);
         request_.setQuery(question, space);
+	request_.addQueryMap();
       }
       else
       {

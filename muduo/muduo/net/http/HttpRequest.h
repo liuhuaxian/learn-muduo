@@ -18,6 +18,10 @@
 #include <map>
 #include <assert.h>
 #include <stdio.h>
+#include <vector>
+
+using std::vector;
+using std::map;
 
 namespace muduo
 {
@@ -161,6 +165,72 @@ class HttpRequest : public muduo::copyable
 
   const std::map<string, string>& headers() const
   { return headers_; }
+  
+
+  void stringSplit(const string& str,vector<string>& vStr,const char& division)
+  {
+	  string::size_type startPos = 0;
+	  string::size_type endPos = string::npos;
+
+	  startPos = str.find_first_not_of(division);
+	  while(startPos != string::npos)
+	  {
+		  endPos = str.find_first_of(division,startPos);
+		  if(endPos != string::npos)
+		  {
+			  string strSplit = str.substr(startPos,(endPos-startPos));
+			  vStr.push_back(strSplit);
+		  }else
+		  {
+			  string strSplit = str.substr(startPos);
+			  vStr.push_back(strSplit);
+		  }
+		  startPos = str.find_first_not_of(division,endPos );
+	  }
+
+
+	  return;
+  }
+
+
+  void parseGetQuery(const string& query, map<string,string>& queryMap)
+  {
+	  vector<string > vstr;
+	  stringSplit(query,vstr,'&');
+	  for(const auto& temp : vstr)
+	  {
+		  size_t pos = temp.find("=");
+		  if(pos != string::npos)
+		  {
+			  string key(temp,0,pos);
+			  string value(temp, pos+1 , temp.size()-pos-1);
+			  queryMap[key]=value;
+		  }
+	  }
+	  return;
+  }
+
+
+  void addQueryMap()
+  {
+	string temp(query_,1);
+	parseGetQuery(temp, queryMap_);
+  }
+ 
+  string getqueryMap(const string& field) const
+  {
+    string result;
+    std::map<string, string>::const_iterator it = queryMap_.find(field);
+    if (it != headers_.end())
+    {
+      result = it->second;
+    }
+    return result;
+  } 
+
+  const std::map<string, string>& queryMap() const
+  { return queryMap_; }
+
 
   void swap(HttpRequest& that)
   {
@@ -170,6 +240,7 @@ class HttpRequest : public muduo::copyable
     query_.swap(that.query_);
     receiveTime_.swap(that.receiveTime_);
     headers_.swap(that.headers_);
+    queryMap_.swap(that.queryMap_);
   }
 
  private:
@@ -179,6 +250,7 @@ class HttpRequest : public muduo::copyable
   string query_;
   Timestamp receiveTime_;
   std::map<string, string> headers_;
+  std::map<string, string> queryMap_;
 };
 
 }  // namespace net

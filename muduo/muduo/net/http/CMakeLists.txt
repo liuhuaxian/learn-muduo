@@ -20,6 +20,9 @@ if(MUDUO_BUILD_EXAMPLES)
 add_executable(httpserver_test tests/HttpServer_test.cc)
 target_link_libraries(httpserver_test muduo_http)
 
+add_executable(httpserver_test_lhx tests/HttpServer_test_lhx.cc)
+target_link_libraries(httpserver_test_lhx muduo_http)
+
 if(BOOSTTEST_LIBRARY)
 add_executable(httprequest_unittest tests/HttpRequest_unittest.cc)
 target_link_libraries(httprequest_unittest muduo_http boost_unit_test_framework)

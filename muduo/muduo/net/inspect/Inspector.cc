@@ -23,7 +23,6 @@
 //#include <sstream>
 //#include <boost/algorithm/string/classification.hpp>
 //#include <boost/algorithm/string/split.hpp>
-
 using namespace muduo;
 using namespace muduo::net;
 
@@ -72,10 +71,10 @@ Inspector::Inspector(EventLoop* loop,
   server_.setHttpCallback(std::bind(&Inspector::onRequest, this, _1, _2));
   processInspector_->registerCommands(this);
   systemInspector_->registerCommands(this);
-#ifdef HAVE_TCMALLOC
+  #ifdef HAVE_TCMALLOC
   performanceInspector_.reset(new PerformanceInspector);
   performanceInspector_->registerCommands(this);
-#endif
+  #endif
   loop->runAfter(0, std::bind(&Inspector::start, this)); // little race condition
 }
 
